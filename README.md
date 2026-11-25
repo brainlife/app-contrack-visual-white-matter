@@ -1,107 +1,202 @@
-[![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-brainlife.app.252-blue.svg)](https://doi.org/https://doi.org/10.25663/brainlife.app.252)
+<h1 align="center">Track the Human Optic RAdiation (THORA): ConTrack - Eccentricity</h1>
 
-# Track The Human Optic RAdiation (THORA): Contrack - Eccentricity
+<p align="center">
+  Optic radiation streamlines between the LGN and V1, tracked with ConTrack and split into bundles by visual field eccentricity from pRF mapping.
+</p>
 
-This app will This app will track the optic radiation using Contrack (Sherbondy et al, 2009). Specifically, this app will track the optic radiation and then segment it into multiple bundles based on the visual property of eccentricity derived from population receptive field (prf) mapping. This app takes a dtiinit, anat/t1w, rois, prf, mask (tissue type), and freesurfer datatypes and outputs a track/tck and wmc datatype.
+<p align="center">
+  <a href="https://github.com/brainlife/abcd-spec"><img src="https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg" alt="ABCD Spec v1.1"></a>
+  <a href="https://doi.org/10.25663/brainlife.app.252"><img src="https://img.shields.io/badge/Brainlife-brainlife.app.252-blue.svg" alt="Run on brainlife.io"></a>
+  <a href="https://github.com/brainlife/app-contrack-optic-radiation/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="MIT license"></a>
+</p>
 
-### Authors
+> 📍 **This branch, `v1.1`, is the brainlife.io App Track The Human Optic RAdiation (THORA): Contrack - Eccentricity** ([doi:10.25663/brainlife.app.252](https://doi.org/10.25663/brainlife.app.252)).
 
-- Brad Caron (bacaron@utexas.edu)
+## 🧠 At a glance
 
-### Contributors
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
-- Soichi Hayashi (shayashi@iu.edu)
+> **Tracks the optic radiation between LGN and V1 ROIs with ConTrack and segments it into eccentricity bundles using population receptive field (pRF) eccentricity maps, producing a tck tractogram and a white matter classification.**
 
-### Funding Acknowledgement
+Prepares a CSF exclusion mask from a 5TT image (or 5ttgen fsl on the T1 when no mask is given), brings the FreeSurfer ribbon, ROIs and the pRF eccentricity map into T1 space, runs ConTrack (vistasoft, compiled MATLAB) between inflated LGN and V1 ROIs per hemisphere, and classifies streamlines by the V1 eccentricity ranges given in minDegree/maxDegree. Needs a dtiInit output, a T1, FreeSurfer, pRF eccentricity and an ROI directory with lh/rh LGN and V1 ROIs; runs up to 32 h. Requires a FreeSurfer license.
 
-brainlife.io is publicly funded and for the sustainability of the project it is helpful to Acknowledge the use of the platform. We kindly ask that you acknowledge the funding below in your publications and code reusing this code.
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/dtiinit` · `neuro/anat/t1w` · `neuro/rois` · `neuro/prf` · `neuro/mask` (optional) · `neuro/freesurfer` |
+| 📤 **Outputs** | `neuro/track/tck` · `neuro/wmc` |
+| 🐳 **Container** | `brainlife/mrtrix3:3.0_RC3` |
+| ⚙️ **Resources** | 1 CPUs · 20 GB memory · 32 h walltime |
+| 🔑 **Requires** | `FREESURFER_LICENSE` |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.252](https://doi.org/10.25663/brainlife.app.252) |
 
-[![NSF-BCS-1734853](https://img.shields.io/badge/NSF_BCS-1734853-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1734853)
-[![NSF-BCS-1636893](https://img.shields.io/badge/NSF_BCS-1636893-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1636893)
-[![NSF-ACI-1916518](https://img.shields.io/badge/NSF_ACI-1916518-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1916518)
-[![NSF-IIS-1912270](https://img.shields.io/badge/NSF_IIS-1912270-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1912270)
-[![NIH-NIBIB-R01EB029272](https://img.shields.io/badge/NIH_NIBIB-R01EB029272-green.svg)](https://grantome.com/grant/NIH/R01-EB029272-01)
+#### 📥 Inputs
 
-### Citations
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `dtiinit` | `neuro/dtiinit` | yes | dtiInit output of the subject; copied and used by ConTrack for tracking. |
+| `t1` | `neuro/anat/t1w` | yes | T1-weighted image that defines the space all ROIs, ribbon and eccentricity maps are resliced to. |
+| `rois` | `neuro/rois` | yes | ROI directory containing per-hemisphere LGN and V1 ROIs named *lh.<lgn>.nii.gz / *rh.<lgn>.nii.gz and *lh.<v1>.nii.gz / *rh.<v1>.nii.gz, plus optional *.exclusion.nii.gz. File names must match the lgn and v1 parameters. |
+| `prf` | `neuro/prf` | yes | pRF mapping output; its eccentricity map is masked by the V1 ROI and cortical ribbon to define eccentricity-specific V1 targets. |
+| `mask` | `neuro/mask` (5tt_masks) | no | 5-tissue type mask to extract csf |
+| `freesurfer` | `neuro/freesurfer` | yes | FreeSurfer output; lh/rh ribbon.mgz and ribbon.mgz are used to restrict V1 eccentricity to cortex. |
 
-We kindly ask that you cite the following articles when publishing papers and code using this code.
+#### 📤 Outputs
 
-1. Avesani, P., McPherson, B., Hayashi, S. et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. Sci Data 6, 69 (2019). https://doi.org/10.1038/s41597-019-0073-y
+| Output | Datatype | Description |
+|---|---|---|
+| `track` | `neuro/track/tck` | Optic radiation streamlines from ConTrack (track.tck). |
+| `wmc` | `neuro/wmc` | White matter classification (classification.mat) assigning streamlines to eccentricity bundles per hemisphere, with per-tract files and fiber counts. |
 
-2. Sherbondy AJ, Dougherty RF, Ben-Shachar M, Napel S, Wandell BA. ConTrack: finding the most likely pathways between brain regions using diffusion tractography. J Vis. 2008;8(9):1-16. Published 2008 Jul 29. doi:10.1167/8.9.15
+<details>
+<summary><b>⚙️ Parameters</b> (12)</summary>
 
-3. Shumpei Ogawa, Hiromasa Takemura, Hiroshi Horiguchi, Masahiko Terao, Tomoki Haji, Franco Pestilli, Jason D. Yeatman, Hiroshi Tsuneoka, Brian A. Wandell, Yoichiro Masuda; White Matter Consequences of Retinal Receptor and Ganglion Cell Damage. Invest. Ophthalmol. Vis. Sci. 2014;55(10):6976-6986. doi: https://doi.org/10.1167/iovs.14-14737.
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `nSamples` | number | `50000` | Number of streamlines desired. NOTE: This may not be final total as tracking is performed without anatomical constraints (i.e. csf exclusion) |
+| `maxNodes` | number | `240` | maximum number of nodes |
+| `minNodes` | number | `100` | minimum number of nodes |
+| `stepSize` | number | `1` | step size |
+| `lgn` | string | `lgn` | number of LGN (008109 - left hemisphere; 008209 - right hemisphere) |
+| `v1` | string | `v1` | number of v1 roi |
+| `minDegree` | string | `0 15 30` | Minimum degrees to use for eccentricity classification |
+| `maxDegree` | string | `3 30 90` | Minimum degrees to use for eccentricity classification |
+| `contrackThreshold` | number | `5000` | Not used by the code on this branch (the contrack_score call that would use it is commented out). |
+| `inflate_lgn` | number | `1` | Amount by which the LGN ROI is inflated (bsc_roiFromAtlasNums) before tracking. |
+| `inflate_v1` | number | `1` | Amount by which the V1 ROI is inflated (bsc_roiFromAtlasNums) before tracking. |
+| `minDistanceClean` | number | `0.85` | Not read by the code on this branch. |
 
-4. Yoshimine S, Ogawa S, Horiguchi H, Terao M, Miyazaki A, Matsumoto K, Tsuneoka H, Nakano T, Masuda Y, Pestilli F. Age-related macular degeneration affects the optic radiation white matter projecting to locations of retinal damage. Brain Struct Funct. 2018 Nov;223(8):3889-3900. doi: 10.1007/s00429-018-1702-5. Epub 2018 Jun 27. PMID: 29951918.
+</details>
 
-#### MIT Copyright (c) 2020 brainlife.io The University of Texas at Austin and Indiana University
+<!-- brainlife-app:end -->
 
-## Running the App
+## 🔬 How it works
 
-### On Brainlife.io
+The App tracks the optic radiation with ConTrack (Sherbondy et al., 2008) between a lateral geniculate nucleus (LGN) ROI and a V1 ROI in each hemisphere, then segments the streamlines into bundles by the eccentricity of their V1 endpoints, using population receptive field (pRF) eccentricity maps.
 
-You can submit this App online at [https://doi.org/https://doi.org/10.25663/brainlife.app.252](https://doi.org/https://doi.org/10.25663/brainlife.app.252) via the 'Execute' tab.
+1. **CSF exclusion mask.** The CSF volume is taken from the 5-tissue-type mask if you provide one; otherwise MRtrix3 `5ttgen fsl` computes it from the T1 (`brainlife/mrtrix3:3.0_RC3`).
+2. **Anatomy in T1 space.** The FreeSurfer cortical ribbons, the ROIs and the pRF eccentricity map are converted and resliced to the T1 (FreeSurfer 6.0.0, FSL).
+3. **Tracking.** The LGN and V1 ROIs are inflated (`inflate_lgn`, `inflate_v1`) and ConTrack (vistasoft, compiled MATLAB) samples `nSamples` streamlines per hemisphere from the dtiInit output, with the node limits and step size you set.
+4. **Eccentricity classification.** V1 is masked by the cortical ribbon and split into eccentricity ranges defined by `minDegree` and `maxDegree` (by default 0–3°, 15–30° and 30–90°); each streamline is assigned to the range its V1 endpoint falls in.
 
-### Running Locally (on your machine)
+## 🚀 Running the App
 
-1. git clone this repo
+### ☁️ On brainlife.io
 
-2. Inside the cloned directory, create `config.json` with something like the following content with paths to your input files.
+Open the App at [doi.org/10.25663/brainlife.app.252](https://doi.org/10.25663/brainlife.app.252) and choose, for one subject:
 
-```json
-{
-	"dtiinit": "/input/dtiinit",
-	"t1": "/input/t1/t1.nii.gz",
-	"rois": "/input/rois/rois",
-	"eccentricity": "/input/prf/eccentricity.nii.gz",
-	"varea": "/input/prf/varea.nii.gz",
-	"mask": "/input/5tt/mask.nii.gz",
-	"freesurfer": "/input/freesurfer/output",
-	"count": 200,
-	"minnodes": 10,
-	"stepsize": 1,
-	"seed_roi": "008109",
-	"term_roi": "v1",
-	"MinDegree": "0 15 30",
-	"MaxDegree": "3 30 90"
-}
-```
+- a dtiInit output (`neuro/dtiinit`);
+- a T1-weighted image (`neuro/anat/t1w`), which defines the space of all ROIs and maps;
+- an ROI directory (`neuro/rois`) with per-hemisphere LGN and V1 ROIs named `*lh.<lgn>.nii.gz`, `*rh.<lgn>.nii.gz`, `*lh.<v1>.nii.gz` and `*rh.<v1>.nii.gz`, where `<lgn>` and `<v1>` are the values of the `lgn` and `v1` parameters;
+- a pRF mapping output (`neuro/prf`) with an eccentricity map;
+- a FreeSurfer output (`neuro/freesurfer`);
+- optionally, a 5-tissue-type mask (`neuro/mask`, tag `5tt_masks`).
 
-### Sample Datasets
+Set the tracking parameters and press **Execute**. The App writes an optic radiation tractogram (`neuro/track/tck`) and a white matter classification of the eccentricity bundles (`neuro/wmc`), both tagged `optic_radiation`. A run can take up to 32 hours.
 
-You can download sample datasets from Brainlife using [Brainlife CLI](https://github.com/brain-life/cli).
+### 💻 Locally
 
-```
+You need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.github.io/jq/) and a [FreeSurfer license](https://surfer.nmr.mgh.harvard.edu/registration.html). The tracking and classification steps are compiled MATLAB and run in the `brainlife/mcr:neurodebian1604-r2017a` container, so MATLAB is not needed.
+
+1. Clone this repository and check out the App's branch: `git checkout v1.1`.
+2. Create `config.json` with the paths to your inputs and the tracking options:
+
+   ```json
+   {
+       "dtiinit": "/input/dtiinit",
+       "t1": "/input/t1/t1.nii.gz",
+       "rois": "/input/rois/rois",
+       "eccentricity": "/input/prf/eccentricity.nii.gz",
+       "mask": "/input/5tt/mask.nii.gz",
+       "freesurfer": "/input/freesurfer/output",
+       "lgn": "lgn",
+       "v1": "v1",
+       "nSamples": 50000,
+       "maxNodes": 240,
+       "minNodes": 100,
+       "stepSize": 1,
+       "inflate_lgn": 1,
+       "inflate_v1": 1,
+       "minDegree": "0 15 30",
+       "maxDegree": "3 30 90"
+   }
+   ```
+
+   Set `"mask": null` to have the App compute the 5-tissue-type mask from the T1. `nSamples` is the number of streamlines requested, not necessarily the final count, because tracking runs without the CSF exclusion.
+
+3. Export your FreeSurfer license and run the App:
+
+   ```bash
+   export FREESURFER_LICENSE="$(cat ~/freesurfer/license.txt)"
+   ./main
+   ```
+
+### 🧪 Sample data
+
+Download sample datasets from brainlife.io with the [brainlife CLI](https://github.com/brainlife/cli):
+
+```bash
 npm install -g brainlife
 bl login
 mkdir input
-bl dataset download
+bl dataset download <dataset id>
 ```
 
-3. Launch the App by executing 'main'
+## 📦 Outputs
 
-```bash
-./main
+```text
+track/
+└── track.tck                 optic radiation streamlines
+wmc/
+├── classification.mat        streamline-to-bundle assignment, per hemisphere and eccentricity range
+├── tracts/                   per-bundle files
+└── output_fibercounts.txt    number of streamlines in each bundle
 ```
 
-## Output
+## 🩺 Troubleshooting
 
-The main output of this App is a track/tck datatype containing the tractogram of the optic radiations and a wmc datatype containing the streamline classification information.
+- **`tracking failed`**: ConTrack did not produce `track.tck`. Check the logs, and check that the ROI file names in the `rois` directory match the `lgn` and `v1` parameters.
+- **`Please set FREESURFER_LICENSE in .bashrc`**: export your FreeSurfer license as `FREESURFER_LICENSE` before running `./main`.
 
-#### Product.json
+## 📚 Citing
 
-The secondary output of this app is `product.json`. This file allows web interfaces, DB and API calls on the results of the processing.
+> [!TIP]
+> If you use this App in your work, please cite the App, the software it builds on and brainlife.io (below). GitHub's **Cite this repository** button gives the App citation in APA and BibTeX.
 
-### Dependencies
+- Sherbondy AJ, Dougherty RF, Ben-Shachar M, Napel S, Wandell BA. ConTrack: finding the most likely pathways between brain regions using diffusion tractography. *Journal of Vision* 8(9):1–16 (2008). [doi:10.1167/8.9.15](https://doi.org/10.1167/8.9.15)
+- Ogawa S, Takemura H, Horiguchi H, Terao M, Haji T, Pestilli F, Yeatman JD, Tsuneoka H, Wandell BA, Masuda Y. White matter consequences of retinal receptor and ganglion cell damage. *Investigative Ophthalmology & Visual Science* 55(10):6976–6986 (2014). [doi:10.1167/iovs.14-14737](https://doi.org/10.1167/iovs.14-14737)
+- Yoshimine S, Ogawa S, Horiguchi H, Terao M, Miyazaki A, Matsumoto K, Tsuneoka H, Nakano T, Masuda Y, Pestilli F. Age-related macular degeneration affects the optic radiation white matter projecting to locations of retinal damage. *Brain Structure and Function* 223(8):3889–3900 (2018). [doi:10.1007/s00429-018-1702-5](https://doi.org/10.1007/s00429-018-1702-5)
+- Track Visual White Matter Tracks by Visual Field Eccentricty: Contrack. brainlife.io App. [doi:10.25663/brainlife.app.647](https://doi.org/10.25663/brainlife.app.647)
+- Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. Sci Data 6, 69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
+- Fischl. FreeSurfer. *NeuroImage* 62:774-781 (2012). [doi:10.1016/j.neuroimage.2012.01.021](https://doi.org/10.1016/j.neuroimage.2012.01.021)
+- Jenkinson et al. FSL. *NeuroImage* 62:782-790 (2012). [doi:10.1016/j.neuroimage.2011.09.015](https://doi.org/10.1016/j.neuroimage.2011.09.015)
+- Tournier et al. MRtrix3: A fast, flexible and open software framework for medical image processing and visualisation. *NeuroImage* 202:116137 (2019). [doi:10.1016/j.neuroimage.2019.116137](https://doi.org/10.1016/j.neuroimage.2019.116137)
+- Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 
-This App only requires [singularity](https://www.sylabs.io/singularity/) to run. If you don't have singularity, you will need to install following dependencies.   
+## 👥 Authors
 
-- matlab: https://www.mathworks.com/products/matlab.html
-- vistasoft: https://github.com/vistalab/vistasoft
-- encode: https://github.com/francopestilli/encode
-- jsonlab: https://github.com/fangq/jsonlab
-- AFQ: https://github.com/yeatmanlab/AFQ
-- wma_tools: https://github.com/DanNBullock/wma_tools
+- Brad Caron
 
-#### MIT Copyright (c) 2020 brainlife.io The University of Texas at Austin and Indiana University
+**Contributors:** Soichi Hayashi
+
+## 💰 Funding
+
+[![Wellcome-226486/Z/22/Z](https://img.shields.io/badge/Wellcome-226486%2FZ%2F22%2FZ-purple.svg)](https://wellcome.org/)
+[![NIH-NINDS-U24NS140384](https://img.shields.io/badge/NIH_NINDS-U24NS140384-green.svg)](https://reporter.nih.gov/project-details/11261037)
+[![NIH-NINDS-UM1NS132207](https://img.shields.io/badge/NIH_NINDS-UM1NS132207-green.svg)](https://reporter.nih.gov/project-details/11411328)
+[![NIH-NIBIB-R01EB029272](https://img.shields.io/badge/NIH_NIBIB-R01EB029272-green.svg)](https://reporter.nih.gov/project-details/10262925)
+[![NIH-NIBIB-R01EB030896](https://img.shields.io/badge/NIH_NIBIB-R01EB030896-green.svg)](https://reporter.nih.gov/project-details/10428625)
+[![NIH-NIMH-R01MH126699](https://img.shields.io/badge/NIH_NIMH-R01MH126699-green.svg)](https://reporter.nih.gov/project-details/10460628)
+[![NIH-NIDCD-R01DC020088](https://img.shields.io/badge/NIH_NIDCD-R01DC020088-green.svg)](https://reporter.nih.gov/project-details/11140284)
+[![NSF-BCS-1734853](https://img.shields.io/badge/NSF_BCS-1734853-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1734853)
+[![NSF-BCS-2203524](https://img.shields.io/badge/NSF_BCS-2203524-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2203524)
+[![NSF-IIS-1636893](https://img.shields.io/badge/NSF_IIS-1636893-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1636893)
+[![NSF-OAC-2148729](https://img.shields.io/badge/NSF_OAC-2148729-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2148729)
+[![NSF-IIS-1912270](https://img.shields.io/badge/NSF_IIS-1912270-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1912270)
+[![NSF-IIS-2148700](https://img.shields.io/badge/NSF_IIS-2148700-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2148700)
+[![NSF-OAC-1916518](https://img.shields.io/badge/NSF_OAC-1916518-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1916518)
+
+<sub>brainlife.io is publicly funded, and acknowledging that support helps keep it running. This App was developed with support from Wellcome, the U.S. National Institutes of Health (including the BRAIN Initiative BRAIN CONNECTS program: The Axonal Projectome EXchange, U24NS140384, and the Center for Mesoscale Connectomics, UM1NS132207) and the U.S. National Science Foundation.</sub>
+
+## ⚖️ License
+
+[MIT](https://github.com/brainlife/app-contrack-optic-radiation/blob/master/LICENSE), Copyright (c) 2020 brainlife.io, The University of Texas at Austin and Indiana University. The App also uses [vistasoft](https://github.com/vistalab/vistasoft), [encode](https://github.com/francopestilli/encode), [jsonlab](https://github.com/fangq/jsonlab), [AFQ](https://github.com/yeatmanlab/AFQ) and [wma_tools](https://github.com/DanNBullock/wma_tools), each under its own license; FreeSurfer and FSL are distributed under their own licenses.
