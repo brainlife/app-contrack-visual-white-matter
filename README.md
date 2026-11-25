@@ -10,9 +10,9 @@
   <a href="https://github.com/brainlife/app-contrack-visual-white-matter/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="MIT license"></a>
 </p>
 
-> 📍 **This branch, `tracking-eccentricity-or-v1.1`, is the brainlife.io App Track The Human Optic RAdiation (THORA): Contrack - Tracking Eccentricity** ([doi:10.25663/brainlife.app.254](https://doi.org/10.25663/brainlife.app.254)).
+> **This branch, `tracking-eccentricity-or-v1.1`, is the brainlife.io App Track The Human Optic RAdiation (THORA): Contrack - Tracking Eccentricity** ([doi:10.25663/brainlife.app.254](https://doi.org/10.25663/brainlife.app.254)).
 
-## 🧠 At a glance
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -22,14 +22,14 @@ Builds LGN and eccentricity-binned V1 ROIs (from pRF eccentricity masked to V1 a
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/dtiinit` · `neuro/anat/t1w` · `neuro/rois` · `neuro/prf` · `neuro/mask` (optional) · `neuro/freesurfer` |
-| 📤 **Outputs** | `neuro/track/tck` · `neuro/wmc` |
-| 🐳 **Container** | `brainlife/mrtrix3:3.0_RC3` |
-| ⚙️ **Resources** | 1 CPUs · 20 GB memory · 32 h walltime |
-| 🔑 **Requires** | `FREESURFER_LICENSE` |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.254](https://doi.org/10.25663/brainlife.app.254) |
+| **Inputs** | `neuro/dtiinit` · `neuro/anat/t1w` · `neuro/rois` · `neuro/prf` · `neuro/mask` (optional) · `neuro/freesurfer` |
+| **Outputs** | `neuro/track/tck` · `neuro/wmc` |
+| **Container** | `brainlife/mrtrix3:3.0_RC3` |
+| **Resources** | 1 CPUs · 20 GB memory · 32 h walltime |
+| **Requires** | `FREESURFER_LICENSE` |
+| **Run it** | [doi.org/10.25663/brainlife.app.254](https://doi.org/10.25663/brainlife.app.254) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
@@ -40,7 +40,7 @@ Builds LGN and eccentricity-binned V1 ROIs (from pRF eccentricity masked to V1 a
 | `mask` | `neuro/mask` (5tt_masks) | no | MRtrix3 five-tissue-type (5TT) mask; its CSF volume is used as an exclusion region. |
 | `freesurfer` | `neuro/freesurfer` | yes | FreeSurfer subject directory; the cortical ribbon (ribbon.mgz, lh/rh.ribbon.mgz) restricts eccentricity to cortex and defines hemisphere exclusions. |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
@@ -48,7 +48,7 @@ Builds LGN and eccentricity-binned V1 ROIs (from pRF eccentricity masked to V1 a
 | `wmc` | `neuro/wmc` | White matter classification assigning streamlines to optic radiation bundles per hemisphere and eccentricity bin, with tract JSONs for visualisation and fiber counts. |
 
 <details>
-<summary><b>⚙️ Parameters</b> (12)</summary>
+<summary><b>Parameters</b> (12)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -69,7 +69,7 @@ Builds LGN and eccentricity-binned V1 ROIs (from pRF eccentricity masked to V1 a
 
 <!-- brainlife-app:end -->
 
-## 🔬 How it works
+## How it works
 
 The App tracks the optic radiation with ConTrack (Sherbondy et al., 2008) between a lateral geniculate nucleus (LGN) ROI and a V1 ROI in each hemisphere, then segments the streamlines into bundles by the eccentricity of their V1 endpoints, using population receptive field (pRF) eccentricity maps.
 
@@ -78,9 +78,9 @@ The App tracks the optic radiation with ConTrack (Sherbondy et al., 2008) betwee
 3. **Tracking.** The LGN and V1 ROIs are inflated (`inflate_lgn`, `inflate_v1`) and ConTrack (vistasoft, compiled MATLAB) samples `nSamples` streamlines per hemisphere from the dtiInit output, with the node limits and step size you set.
 4. **Eccentricity classification.** V1 is masked by the cortical ribbon and split into eccentricity ranges defined by `minDegree` and `maxDegree` (by default 0–3°, 15–30° and 30–90°); each streamline is assigned to the range its V1 endpoint falls in.
 
-## 🚀 Running the App
+## Running the App
 
-### ☁️ On brainlife.io
+### On brainlife.io
 
 Open the App at [doi.org/10.25663/brainlife.app.252](https://doi.org/10.25663/brainlife.app.252) and choose, for one subject:
 
@@ -93,7 +93,7 @@ Open the App at [doi.org/10.25663/brainlife.app.252](https://doi.org/10.25663/br
 
 Set the tracking parameters and press **Execute**. The App writes an optic radiation tractogram (`neuro/track/tck`) and a white matter classification of the eccentricity bundles (`neuro/wmc`), both tagged `optic_radiation`. A run can take up to 32 hours.
 
-### 💻 Locally
+### Locally
 
 You need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.github.io/jq/) and a [FreeSurfer license](https://surfer.nmr.mgh.harvard.edu/registration.html). The tracking and classification steps are compiled MATLAB and run in the `brainlife/mcr:neurodebian1604-r2017a` container, so MATLAB is not needed.
 
@@ -130,7 +130,7 @@ You need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.
    ./main
    ```
 
-### 🧪 Sample data
+### Sample data
 
 Download sample datasets from brainlife.io with the [brainlife CLI](https://github.com/brainlife/cli):
 
@@ -141,7 +141,7 @@ mkdir input
 bl dataset download <dataset id>
 ```
 
-## 📦 Outputs
+## Outputs
 
 ```text
 track/
@@ -152,12 +152,12 @@ wmc/
 └── output_fibercounts.txt    number of streamlines in each bundle
 ```
 
-## 🩺 Troubleshooting
+## Troubleshooting
 
 - **`tracking failed`**: ConTrack did not produce `track.tck`. Check the logs, and check that the ROI file names in the `rois` directory match the `lgn` and `v1` parameters.
 - **`Please set FREESURFER_LICENSE in .bashrc`**: export your FreeSurfer license as `FREESURFER_LICENSE` before running `./main`.
 
-## 📚 Citing
+## Citing
 
 > [!TIP]
 > If you use this App in your work, please cite the App, the software it builds on and brainlife.io (below). GitHub's **Cite this repository** button gives the App citation in APA and BibTeX.
@@ -172,13 +172,13 @@ wmc/
 - Tournier et al. MRtrix3: A fast, flexible and open software framework for medical image processing and visualisation. *NeuroImage* 202:116137 (2019). [doi:10.1016/j.neuroimage.2019.116137](https://doi.org/10.1016/j.neuroimage.2019.116137)
 - Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 
-## 👥 Authors
+## Authors
 
 - Brad Caron
 
 **Contributors:** Soichi Hayashi
 
-## 💰 Funding
+## Funding
 
 [![Wellcome-226486/Z/22/Z](https://img.shields.io/badge/Wellcome-226486%2FZ%2F22%2FZ-purple.svg)](https://wellcome.org/)
 [![NIH-NINDS-U24NS140384](https://img.shields.io/badge/NIH_NINDS-U24NS140384-green.svg)](https://reporter.nih.gov/project-details/11261037)
@@ -197,6 +197,6 @@ wmc/
 
 <sub>brainlife.io is publicly funded, and acknowledging that support helps keep it running. This App was developed with support from Wellcome, the U.S. National Institutes of Health (including the BRAIN Initiative BRAIN CONNECTS program: The Axonal Projectome EXchange, U24NS140384, and the Center for Mesoscale Connectomics, UM1NS132207) and the U.S. National Science Foundation.</sub>
 
-## ⚖️ License
+## License
 
 [MIT](https://github.com/brainlife/app-contrack-visual-white-matter/blob/master/LICENSE), Copyright (c) 2020 brainlife.io, The University of Texas at Austin and Indiana University. The App also uses [vistasoft](https://github.com/vistalab/vistasoft), [encode](https://github.com/francopestilli/encode), [jsonlab](https://github.com/fangq/jsonlab), [AFQ](https://github.com/yeatmanlab/AFQ) and [wma_tools](https://github.com/DanNBullock/wma_tools), each under its own license; FreeSurfer and FSL are distributed under their own licenses.
